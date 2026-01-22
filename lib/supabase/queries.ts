@@ -115,6 +115,7 @@ export async function saveTranslation(
     translated_response: string
     translated_hints?: string[]
     translated_explanations?: string[]
+    translated_mnemonic_techniques?: string[]
   }
 ) {
   const { data, error } = await supabase

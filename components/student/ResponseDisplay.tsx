@@ -1,15 +1,16 @@
 'use client'
 
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
-import { Lightbulb, BookOpen, CheckCircle } from 'lucide-react'
+import { Lightbulb, BookOpen, CheckCircle, Brain } from 'lucide-react'
 
 interface ResponseDisplayProps {
   answer: string
   hints?: string[]
   explanations?: string[]
+  mnemonicTechniques?: string[]
 }
 
-export default function ResponseDisplay({ answer, hints, explanations }: ResponseDisplayProps) {
+export default function ResponseDisplay({ answer, hints, explanations, mnemonicTechniques }: ResponseDisplayProps) {
   return (
     <Card className="mt-6 border-l-4 border-l-blue-500">
       <CardHeader>
@@ -59,6 +60,29 @@ export default function ResponseDisplay({ answer, hints, explanations }: Respons
                 </li>
               ))}
             </ul>
+          </div>
+        )}
+
+        {/* Mnemonic Techniques section */}
+        {mnemonicTechniques && mnemonicTechniques.length > 0 && (
+          <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+            <h4 className="font-semibold text-purple-900 flex items-center gap-2 mb-2">
+              <Brain className="w-5 h-5" />
+              Techniques pour retenir 🧠
+            </h4>
+            <ul className="space-y-3">
+              {mnemonicTechniques.map((technique, index) => (
+                <li key={index} className="text-sm text-purple-800 bg-white rounded p-3 border border-purple-100">
+                  <div className="flex items-start gap-2">
+                    <span className="text-xl">✨</span>
+                    <span className="font-medium">{technique}</span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <p className="text-xs text-purple-700 mt-3 italic">
+              💡 Ces techniques t'aideront à mieux mémoriser et comprendre !
+            </p>
           </div>
         )}
 

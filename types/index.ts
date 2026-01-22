@@ -41,6 +41,7 @@ export interface HomeworkResponse {
   original_response: string
   translated_responses: Record<LanguageCode, string>
   hints: string[]
+  mnemonic_techniques: string[]
   created_at: string
 }
 
@@ -77,5 +78,6 @@ export interface HomeworkHelpResponse {
   answer: string
   hints: string[]
   explanations: string[]
+  mnemonicTechniques: string[]
   nextSteps?: string[]
 }

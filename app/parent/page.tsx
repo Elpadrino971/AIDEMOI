@@ -29,6 +29,11 @@ const MOCK_QUESTIONS = [
       'Soustraire du nombre de départ',
       'Descendre le chiffre suivant',
     ],
+    mnemonicTechniques: [
+      'DEMS : Diviser, Écrire, Multiplier, Soustraire - pour se rappeler les 4 étapes',
+      'Imagine une échelle : tu descends un chiffre à chaque étape !',
+      'Le diviseur est comme un panier : combien de fois peux-tu le remplir ?',
+    ],
   },
 ]
 
@@ -142,6 +147,7 @@ export default function ParentPage() {
                   answerText={question.answer}
                   hints={question.hints}
                   explanations={question.explanations}
+                  mnemonicTechniques={question.mnemonicTechniques}
                   targetLanguage={selectedLanguage}
                   responseId={question.responseId}
                 />

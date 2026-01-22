@@ -63,6 +63,7 @@ CREATE TABLE homework_responses (
   original_response TEXT NOT NULL,
   hints TEXT[] DEFAULT '{}',
   explanations TEXT[] DEFAULT '{}',
+  mnemonic_techniques TEXT[] DEFAULT '{}',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()),
   UNIQUE(question_id)
 );
@@ -75,6 +76,7 @@ CREATE TABLE translations (
   translated_response TEXT NOT NULL,
   translated_hints TEXT[] DEFAULT '{}',
   translated_explanations TEXT[] DEFAULT '{}',
+  translated_mnemonic_techniques TEXT[] DEFAULT '{}',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()),
   UNIQUE(response_id, target_language)
 );

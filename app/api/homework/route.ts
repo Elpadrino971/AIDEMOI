@@ -97,6 +97,7 @@ export async function POST(request: NextRequest) {
       original_response: responseText,
       hints: structuredResponse.hints,
       explanations: structuredResponse.explanations,
+      mnemonic_techniques: structuredResponse.mnemonicTechniques,
     })
 
     // Increment usage quota
@@ -109,6 +110,7 @@ export async function POST(request: NextRequest) {
       answer: responseText,
       hints: structuredResponse.hints,
       explanations: structuredResponse.explanations,
+      mnemonicTechniques: structuredResponse.mnemonicTechniques,
     })
 
   } catch (error) {
@@ -124,15 +126,18 @@ export async function POST(request: NextRequest) {
 function parseAssistantResponse(text: string): {
   hints: string[]
   explanations: string[]
+  mnemonicTechniques: string[]
 } {
   const hints: string[] = []
   const explanations: string[] = []
+  const mnemonicTechniques: string[] = []
 
   // Simple parsing - look for numbered points or bullet points
   const lines = text.split('\n')
 
   let inHintsSection = false
   let inExplanationSection = false
+  let inMnemonicSection = false
 
   for (const line of lines) {
     const trimmedLine = line.trim()
@@ -142,13 +147,26 @@ function parseAssistantResponse(text: string): {
         trimmedLine.toLowerCase().includes('hint')) {
       inHintsSection = true
       inExplanationSection = false
+      inMnemonicSection = false
       continue
     }
 
     if (trimmedLine.toLowerCase().includes('explication') ||
-        trimmedLine.toLowerCase().includes('méthode')) {
+        trimmedLine.toLowerCase().includes('méthode') ||
+        trimmedLine.toLowerCase().includes('étape')) {
       inExplanationSection = true
       inHintsSection = false
+      inMnemonicSection = false
+      continue
+    }
+
+    if (trimmedLine.toLowerCase().includes('mnémotechnique') ||
+        trimmedLine.toLowerCase().includes('mnemonic') ||
+        trimmedLine.toLowerCase().includes('pour retenir') ||
+        trimmedLine.toLowerCase().includes('pour mémoriser')) {
+      inMnemonicSection = true
+      inHintsSection = false
+      inExplanationSection = false
       continue
     }
 
@@ -159,6 +177,8 @@ function parseAssistantResponse(text: string): {
       if (content) {
         if (inHintsSection) {
           hints.push(content)
+        } else if (inMnemonicSection) {
+          mnemonicTechniques.push(content)
         } else if (inExplanationSection) {
           explanations.push(content)
         } else {
@@ -175,5 +195,5 @@ function parseAssistantResponse(text: string): {
     explanations.push(...sentences.slice(0, 3))
   }
 
-  return { hints, explanations }
+  return { hints, explanations, mnemonicTechniques }
 }

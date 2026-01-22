@@ -75,6 +75,7 @@ export default function StudentPage() {
                 answer={response.answer}
                 hints={response.hints}
                 explanations={response.explanations}
+                mnemonicTechniques={response.mnemonicTechniques}
               />
 
               {/* New question button */}

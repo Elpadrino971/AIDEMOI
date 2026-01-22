@@ -4,13 +4,14 @@ import { useState, useEffect } from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import { LanguageCode } from '@/lib/constants/languages'
-import { Languages, Lightbulb, BookOpen } from 'lucide-react'
+import { Languages, Lightbulb, BookOpen, Brain } from 'lucide-react'
 
 interface TranslatedResponseProps {
   questionText: string
   answerText: string
   hints: string[]
   explanations: string[]
+  mnemonicTechniques?: string[]
   targetLanguage: LanguageCode
   responseId: string
 }
@@ -20,6 +21,7 @@ export default function TranslatedResponse({
   answerText,
   hints,
   explanations,
+  mnemonicTechniques = [],
   targetLanguage,
   responseId,
 }: TranslatedResponseProps) {
@@ -28,6 +30,7 @@ export default function TranslatedResponse({
     answer: string
     hints: string[]
     explanations: string[]
+    mnemonicTechniques: string[]
   } | null>(null)
   const [isTranslating, setIsTranslating] = useState(false)
   const [error, setError] = useState('')
@@ -40,6 +43,7 @@ export default function TranslatedResponse({
         answer: answerText,
         hints,
         explanations,
+        mnemonicTechniques,
       })
       return
     }
@@ -59,6 +63,7 @@ export default function TranslatedResponse({
         answerText,
         ...hints,
         ...explanations,
+        ...mnemonicTechniques,
       ]
 
       const response = await fetch('/api/translate', {
@@ -79,11 +84,16 @@ export default function TranslatedResponse({
       const data = await response.json()
       const translated = data.translatedTexts
 
+      const hintsStartIndex = 2
+      const explanationsStartIndex = hintsStartIndex + hints.length
+      const mnemonicStartIndex = explanationsStartIndex + explanations.length
+
       setTranslatedData({
         question: translated[0] || questionText,
         answer: translated[1] || answerText,
-        hints: translated.slice(2, 2 + hints.length),
-        explanations: translated.slice(2 + hints.length),
+        hints: translated.slice(hintsStartIndex, explanationsStartIndex),
+        explanations: translated.slice(explanationsStartIndex, mnemonicStartIndex),
+        mnemonicTechniques: translated.slice(mnemonicStartIndex),
       })
     } catch (err) {
       setError('Impossible de traduire le contenu')
@@ -175,6 +185,29 @@ export default function TranslatedResponse({
                 </li>
               ))}
             </ul>
+          </div>
+        )}
+
+        {/* Mnemonic Techniques */}
+        {translatedData.mnemonicTechniques && translatedData.mnemonicTechniques.length > 0 && (
+          <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
+            <h4 className="font-semibold text-indigo-900 mb-2 flex items-center gap-2">
+              <Brain className="w-5 h-5" />
+              Techniques pour retenir 🧠 :
+            </h4>
+            <ul className="space-y-3">
+              {translatedData.mnemonicTechniques.map((technique, index) => (
+                <li key={index} className="text-sm text-indigo-800 bg-white rounded p-3 border border-indigo-100">
+                  <div className="flex items-start gap-2">
+                    <span className="text-xl">✨</span>
+                    <span className="font-medium">{technique}</span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <p className="text-xs text-indigo-700 mt-3 italic">
+              💡 Utilisez ces astuces pour aider votre enfant à mieux mémoriser !
+            </p>
           </div>
         )}
 
